@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -25,7 +24,7 @@ public class SelfieNotificationReceiver extends BroadcastReceiver{
 
         Log.i(TAG, "Received the alarm broadcast event");
         // The intent to be used when the user clicks on the notification
-        mSelfieIntent = new Intent(context, Selfies.class);
+        mSelfieIntent = new Intent(context, SelfieListViewActivity.class);
 
         // The pending intent that wraps the underlying intent
         mContentIntent = PendingIntent.getActivity(context, 0, mSelfieIntent, PendingIntent.FLAG_UPDATE_CURRENT);

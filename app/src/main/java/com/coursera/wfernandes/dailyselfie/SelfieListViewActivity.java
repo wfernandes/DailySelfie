@@ -11,12 +11,22 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class SelfieListViewActivity extends ListActivity {
@@ -26,17 +36,34 @@ public class SelfieListViewActivity extends ListActivity {
     private Intent mSelfieNotificationIntent;
 
     private static final String TAG = "SelfieActivity";
-    private static final long ONE_MINUTE = 30 * 1000L;
+    private static final long ONE_MINUTE = 60 * 1000L;
     private static final int REQUEST_TAKE_PHOTO = 1;
-    private ImageView mImageView;
     private String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_selfies);
 
-        mImageView = (ImageView) findViewById(R.id.selfie_image);
+        ArrayList<Selfie> items = new ArrayList<Selfie>();
+
+        items.add(new Selfie("Selfie 1"));
+        items.add(new Selfie("Selfie 2"));
+        items.add(new Selfie("Selfie 3"));
+        items.add(new Selfie("Selfie 4"));
+
+        // Create new list adapter
+        setListAdapter(new CustomAdapter(this, R.layout.list_item, R.id.item_txt, items));
+        ListView listView = getListView();
+        listView.setTextFilterEnabled(true);
+        listView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent fullSelfieIntent = new Intent(Intent.ACTION_VIEW);
+                fullSelfieIntent.setDataAndType(Uri.parse("file:///sdcard/Pictures/SELFIE_20141124_000248_-694454779.jpg"), "image/*");
+                startActivity(fullSelfieIntent);
+            }
+        });
+
 
         createPendingIntents();
 

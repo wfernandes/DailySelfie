@@ -1,9 +1,12 @@
 package com.coursera.wfernandes.dailyselfie;
 
 import android.app.Activity;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 
 public class FullSelfieActivity extends Activity {
@@ -12,6 +15,11 @@ public class FullSelfieActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_selfie);
+
+        String v = getIntent().getStringExtra("xxx");
+        ImageView imageView = (ImageView)findViewById(R.id.selfie_full);
+
+        imageView.setBackground( getResources().getDrawable(R.drawable.me));
     }
 
 
