@@ -1,7 +1,6 @@
 package com.coursera.wfernandes.dailyselfie;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,7 @@ public class CustomAdapter extends ArrayAdapter<Selfie>{
 
         if(selfie != null){
             viewHolder.textView.setText(selfie.getSelfieName());
-            viewHolder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.me));
+            viewHolder.imageView.setImageBitmap(selfie.getSelfieThumb());
         }
 
         return convertView;
