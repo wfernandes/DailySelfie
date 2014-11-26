@@ -62,8 +62,19 @@ public class SelfieListViewActivity extends ListActivity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), SELFIES.get(i).getSelfieName(), Toast.LENGTH_SHORT).show();
-                return true;
+
+                Selfie selfie = SELFIES.get(i);
+                File selfieFile = new File(selfie.getSelfiePath());
+
+                if (selfieFile.exists()) {
+                    String toastMsg = selfieFile.delete() ? "Successfully deleted " + selfie.getSelfieName() : "Delete failed";
+                    Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
+                    SELFIES.remove(selfie);
+                    SELFIE_ADAPTER.notifyDataSetChanged();
+                    return true;
+                }
+
+                return false;
             }
         });
 
