@@ -6,19 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.List;
 
-public class CustomAdapter extends ArrayAdapter<Selfie>{
+public class CustomAdapter extends ArrayAdapter<Selfie> implements ListAdapter {
 
     private final Context context;
-    private final List<Selfie> data;
 
     public CustomAdapter(Context context, int resource, int textViewResource, List<Selfie> objects) {
         super(context, resource, textViewResource, objects);
         this.context = context;
-        this.data = objects;
     }
 
     @Override

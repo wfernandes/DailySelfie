@@ -36,7 +36,8 @@ public class SelfieListViewActivity extends ListActivity {
     private static final int THUMB_DIM = 100;
     private static final long ONE_MINUTE = 60 * 1000L;
     private static final int REQUEST_TAKE_PHOTO = 1;
-    private String mCurrentPhotoPath;
+    private List<Selfie> SELFIES = new ArrayList<Selfie>();
+    private static CustomAdapter SELFIE_ADAPTER;
     private static final File STORAGE_DIR = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
     @Override
@@ -44,15 +45,16 @@ public class SelfieListViewActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         // Create new list adapter
-        final List<Selfie> selfieList = getSelfies();
-        setListAdapter(new CustomAdapter(this, R.layout.list_item, R.id.item_txt, selfieList));
+        getSelfies(SELFIES);
+        SELFIE_ADAPTER = new CustomAdapter(this, R.layout.list_item, R.id.item_txt, SELFIES);
+        SELFIE_ADAPTER.setNotifyOnChange(true);
+        setListAdapter(SELFIE_ADAPTER);
         ListView listView = getListView();
-        listView.setTextFilterEnabled(true);
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent fullSelfieIntent = new Intent(Intent.ACTION_VIEW);
-                fullSelfieIntent.setDataAndType(Uri.parse("file://" + selfieList.get(i).getSelfiePath()), "image/*");
+                fullSelfieIntent.setDataAndType(Uri.parse("file://" + SELFIES.get(i).getSelfiePath()), "image/*");
                 startActivity(fullSelfieIntent);
             }
         });
@@ -111,6 +113,8 @@ public class SelfieListViewActivity extends ListActivity {
             return true;
         } else if (id == R.id.action_camera) {
             takePicture();
+        } else if (id == R.id.action_refresh) {
+            updateSelfieList();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -155,14 +159,13 @@ public class SelfieListViewActivity extends ListActivity {
                 , STORAGE_DIR
         );
 
-        Log.i(TAG, image.getAbsolutePath());
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }
 
-    private List<Selfie> getSelfies() {
-        List<Selfie> selfieList = new ArrayList<Selfie>();
-        if (STORAGE_DIR.exists()) {
+    private void getSelfies(List<Selfie> selfieList) {
+        if (selfieList != null && STORAGE_DIR.exists()) {
+            // For now we are starting from fresh and rebuilding the list.
+            selfieList.clear();
             Log.i(TAG, "Storage directory exists!!");
             for (File file : STORAGE_DIR.listFiles(new SelfieFileFilter())) {
                 selfieList.add(
@@ -175,8 +178,6 @@ public class SelfieListViewActivity extends ListActivity {
             }
 
         }
-        Log.i(TAG, "Number of selfies: " + selfieList.size());
-        return selfieList;
     }
 
     private Bitmap getSelfieThumbnail(String photoPath) {
@@ -201,5 +202,13 @@ public class SelfieListViewActivity extends ListActivity {
         bmOptions.inPurgeable = true;
 
         return BitmapFactory.decodeFile(photoPath, bmOptions);
+    }
+
+    private void updateSelfieList() {
+        Log.i(TAG, "old selfies list size..." + SELFIES.size());
+        Log.i(TAG, "UPDATING!!");
+        getSelfies(SELFIES);
+        Log.i(TAG, "updating selfies list..." + SELFIES.size());
+        SELFIE_ADAPTER.notifyDataSetChanged();
     }
 }
