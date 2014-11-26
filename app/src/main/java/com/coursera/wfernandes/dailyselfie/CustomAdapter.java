@@ -6,12 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.List;
 
-public class CustomAdapter extends ArrayAdapter<Selfie> implements ListAdapter {
+public class CustomAdapter extends ArrayAdapter<Selfie> {
 
     private final Context context;
 
@@ -27,17 +26,17 @@ public class CustomAdapter extends ArrayAdapter<Selfie> implements ListAdapter {
         final ViewHolder viewHolder;
 
 
-        if(convertView == null){
+        if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.list_item, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.textView = (TextView) convertView.findViewById(R.id.item_txt);
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.item_img);
             convertView.setTag(viewHolder);
-        }else{
+        } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        if(selfie != null){
+        if (selfie != null) {
             viewHolder.textView.setText(selfie.getSelfieName());
             viewHolder.imageView.setImageBitmap(selfie.getSelfieThumb());
         }
