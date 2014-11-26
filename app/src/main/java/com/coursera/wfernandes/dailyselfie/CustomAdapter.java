@@ -25,7 +25,6 @@ public class CustomAdapter extends ArrayAdapter<Selfie> {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         final ViewHolder viewHolder;
 
-
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.list_item, parent, false);
             viewHolder = new ViewHolder();
@@ -37,11 +36,10 @@ public class CustomAdapter extends ArrayAdapter<Selfie> {
         }
 
         if (selfie != null) {
-            viewHolder.textView.setText(selfie.getSelfieName());
+            viewHolder.textView.setText(Utils.getReadableSelfieName(selfie.getSelfieName()));
             viewHolder.imageView.setImageBitmap(selfie.getSelfieThumb());
         }
 
         return convertView;
-
     }
 }
