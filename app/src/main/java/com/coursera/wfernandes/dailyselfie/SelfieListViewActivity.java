@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class SelfieListViewActivity extends ListActivity {
 
     private static final String TAG = "SelfieActivity";
     private static final int THUMB_DIM = 100;
-    private static final long ONE_MINUTE = 60 * 1000L;
+    private static final long TWO_MINUTES = 120 * 1000L;
     private static final int REQUEST_TAKE_PHOTO = 1;
     private List<Selfie> SELFIES = new ArrayList<Selfie>();
     private static CustomAdapter SELFIE_ADAPTER;
@@ -58,23 +59,18 @@ public class SelfieListViewActivity extends ListActivity {
                 startActivity(fullSelfieIntent);
             }
         });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getApplicationContext(), SELFIES.get(i).getSelfieName(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
 
 
         createPendingIntents();
 
         createSelfieReminders();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            Log.i(TAG, "Getting the image thumbnail");
-//            Bundle extras = data.getExtras();
-//            Bitmap imageThumbnail = (Bitmap) extras.get("data");
-//            mImageView.setImageBitmap(imageThumbnail);
-
-        }
     }
 
     private void createSelfieReminders() {
@@ -83,8 +79,8 @@ public class SelfieListViewActivity extends ListActivity {
 
         // Broadcast the notification intent at specified intervals
         mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP
-                , System.currentTimeMillis() + ONE_MINUTE
-                , ONE_MINUTE
+                , System.currentTimeMillis() + TWO_MINUTES
+                , TWO_MINUTES
                 , mSelfiePendingIntent);
 
     }
@@ -149,7 +145,7 @@ public class SelfieListViewActivity extends ListActivity {
     private File createImageFile() throws IOException {
         // Create a unique image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "SELFIE_" + timeStamp;
+        String imageFileName = "SELFIE_" + timeStamp + "_";
         // Make sure the directory exists
         STORAGE_DIR.mkdirs();
 
@@ -205,10 +201,7 @@ public class SelfieListViewActivity extends ListActivity {
     }
 
     private void updateSelfieList() {
-        Log.i(TAG, "old selfies list size..." + SELFIES.size());
-        Log.i(TAG, "UPDATING!!");
         getSelfies(SELFIES);
-        Log.i(TAG, "updating selfies list..." + SELFIES.size());
         SELFIE_ADAPTER.notifyDataSetChanged();
     }
 }
