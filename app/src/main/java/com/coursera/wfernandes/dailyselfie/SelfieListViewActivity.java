@@ -85,7 +85,6 @@ public class SelfieListViewActivity extends ListActivity {
     }
 
     private void createSelfieReminders() {
-        Log.i(TAG, "Create selfie reminders");
         mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         // Broadcast the notification intent at specified intervals
@@ -97,7 +96,6 @@ public class SelfieListViewActivity extends ListActivity {
     }
 
     private void createPendingIntents() {
-        Log.i(TAG, "Create pending intents");
         // Create the notification pending intent
         mSelfieNotificationIntent = new Intent(SelfieListViewActivity.this, SelfieNotificationReceiver.class);
         mSelfiePendingIntent = PendingIntent.getBroadcast(SelfieListViewActivity.this, 0, mSelfieNotificationIntent, 0);
@@ -116,14 +114,21 @@ public class SelfieListViewActivity extends ListActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_camera) {
+        if (id == R.id.action_camera) {
             takePicture();
         } else if (id == R.id.action_refresh) {
             updateSelfieList();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            updateSelfieList();
+        }
     }
 
     private void takePicture() {
